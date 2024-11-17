@@ -5,7 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 //routes
 const auth = require("./routes/authentication");
-
+const fetchWallpaper = require("./routes/wallpaper");
 const app = express();
 //middleware
 app.use(cors());
@@ -13,7 +13,7 @@ app.use(express.json());
 
 //routes
 app.use("/api/auth/", auth);
-
+app.use("/api/wall/", fetchWallpaper);
 //connect mongo
 mongoose
   .connect(process.env.MONGO_URI)
@@ -24,7 +24,7 @@ mongoose
     console.log(`Mongo DB not connected ${err}`);
   });
 
-  //run server
+//run server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running PORT ${PORT}`);
