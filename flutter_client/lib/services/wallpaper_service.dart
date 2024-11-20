@@ -4,7 +4,7 @@ import "package:flutter_client/models/wallpaper_model.dart";
 import "package:http/http.dart" as http;
 
 class WallpaperService {
-  final baseUrl = "http://192.168.251.148:5000/api/wall/search";
+  final baseUrl = "http://10.10.2.79:5000/api/wall/search";
 
   Future<List<WallpaperModel>> searchWallpaper(String keyWord) async {
     try {

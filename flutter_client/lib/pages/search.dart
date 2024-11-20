@@ -49,64 +49,79 @@ class _SearchState extends State<Search> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff0e0f0f),
+          elevation: 0.0, // Remove shadow
+          //search bar
+          title: ReusableTextfiled(
+            controller: _searchController,
+            inputType: TextInputType.name,
+            inputAction: TextInputAction.done,
+            isShow: false,
+            hint: "Search for wallpapers",
+            onSubmit: (String _) {
+              _searchWalls();
+            },
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              //search bar
-              ReusableTextfiled(
-                controller: _searchController,
-                inputType: TextInputType.name,
-                inputAction: TextInputAction.done,
-                isShow: false,
-                hint: "Search for wallpapers",
-                onSubmit: (String _) {
-                  _searchWalls();
-                },
-              ),
-              _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : _wallpapers.isNotEmpty
-                      ? StaggeredGrid.count(
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                          axisDirection: AxisDirection.down,
-                          crossAxisCount: 2,
-                          children: _wallpapers.map((wallpaper) {
-                            //wallapaper
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16)),
-                                child: Column(
-                                  children: [
-                                    Image.network(
-                                      wallpaper.url,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Text(
-                                      wallpaper.discription,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: secondoryColor,
-                                        overflow: TextOverflow.ellipsis,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              children: [
+                _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.only(top: 150),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: secondoryColor,
+                          ),
+                        ),
+                      )
+                    : _wallpapers.isNotEmpty
+                        ? StaggeredGrid.count(
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                            axisDirection: AxisDirection.down,
+                            crossAxisCount: 2,
+                            children: _wallpapers.map((wallpaper) {
+                              //wallapaper
+                              return GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          wallpaper.url,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Text(
+                                        wallpaper.discription,
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: secondoryColor,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                        )
-                      : const Center(
-                          child: SizedBox(),
-                        )
-            ],
+                              );
+                            }).toList(),
+                          )
+                        : const Center(
+                            child: SizedBox(),
+                          )
+              ],
+            ),
           ),
         ),
       ),
