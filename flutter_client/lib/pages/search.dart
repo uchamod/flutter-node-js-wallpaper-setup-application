@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/models/wallpaper_model.dart';
+import 'package:flutter_client/router/router_names.dart';
 import 'package:flutter_client/services/wallpaper_service.dart';
 import 'package:flutter_client/util/constants.dart';
 import 'package:flutter_client/widget/reusable_textfiled.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -85,7 +87,11 @@ class _SearchState extends State<Search> {
                             children: _wallpapers.map((wallpaper) {
                               //wallapaper
                               return GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  GoRouter.of(context).goNamed(
+                                      RouterNames.singleWallpaper,
+                                      extra: wallpaper);
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16)),

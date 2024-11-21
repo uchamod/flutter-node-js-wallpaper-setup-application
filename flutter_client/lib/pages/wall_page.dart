@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/models/wallpaper_model.dart';
 import 'package:flutter_client/router/router_names.dart';
 import 'package:flutter_client/services/auth_services.dart';
+import 'package:flutter_client/services/wallpaper_service.dart';
 import 'package:flutter_client/util/constants.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 
 class WallPage extends StatefulWidget {
@@ -13,10 +16,32 @@ class WallPage extends StatefulWidget {
 
 class _WallPageState extends State<WallPage> {
   final AuthServices _authServices = AuthServices();
+  final WallpaperService _wallpaperService = WallpaperService();
+  List<WallpaperModel> _wallpapers = [];
+
+  void _getWalls() async {
+    try {
+      for (int i = 0; i < 3; i++) {
+        List<WallpaperModel> randomWallpapers =
+            await _wallpaperService.randomWallpaper();
+        setState(() {
+          _wallpapers = [...randomWallpapers];
+        });
+      }
+    } catch (err) {
+      print("Error random fetching wallpapers: $err");
+    }
+  }
 
   void _logout() {
     _authServices.logOut();
     GoRouter.of(context).goNamed(RouterNames.login);
+  }
+
+  @override
+  void initState() {
+    _getWalls();
+    super.initState();
   }
 
   @override
@@ -42,10 +67,52 @@ class _WallPageState extends State<WallPage> {
                 ))
           ],
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Column(
-            children: [],
+            children: [
+              StaggeredGrid.count(
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                axisDirection: AxisDirection.down,
+                crossAxisCount: 2,
+                children: _wallpapers.map((wallpaper) {
+                  //wallapaper
+                  return GestureDetector(
+                    onTap: () {
+                      GoRouter.of(context).goNamed(RouterNames.singleWallpaper,
+                          extra: wallpaper);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              wallpaper.url,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(
+                            wallpaper.discription,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: secondoryColor,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )
+            ],
           ),
         ),
       ),
