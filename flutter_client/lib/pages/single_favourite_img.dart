@@ -5,19 +5,19 @@ import 'package:flutter_client/services/wallpaper_service.dart';
 import 'package:flutter_client/util/constants.dart';
 import 'package:flutter_client/widget/reusable_button.dart';
 
-class SingleWallpaper extends StatefulWidget {
+class SingleFavouriteImg extends StatefulWidget {
   final WallpaperModel wallapaper;
-  const SingleWallpaper({super.key, required this.wallapaper});
+  const SingleFavouriteImg({super.key, required this.wallapaper});
 
   @override
-  State<SingleWallpaper> createState() => _SingleWallpaperState();
+  State<SingleFavouriteImg> createState() => _SingleFavouriteImgState();
 }
 
-class _SingleWallpaperState extends State<SingleWallpaper> {
+class _SingleFavouriteImgState extends State<SingleFavouriteImg> {
   bool _isLoading = false;
   final WallpaperService _wallpaperService = WallpaperService();
   final FavouriteServices _favouriteServices = FavouriteServices();
-  //set as wallapper in selected wallapper
+  //set as wallaper
   Future<void> _setWallpaper(String url) async {
     setState(() {
       _isLoading = true;
@@ -58,21 +58,13 @@ class _SingleWallpaperState extends State<SingleWallpaper> {
     }
   }
 
-  //save wallappers
-  void _saveAsFav(
-      String id, String url, String discription, String cretor) async {
-    setState(() {
-      _isLoading = true;
-    });
+//remove from wallpaper
+  void _removeFromFav(String id) async {
     try {
-      await _favouriteServices.addToFav(id, url, discription, cretor);
+      await _favouriteServices.removeFromFav(id);
       Navigator.pop(context);
     } catch (err) {
-      throw Exception('Failed to add to favorites');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      print("Failed to set wallpaper: $err");
     }
   }
 
@@ -111,11 +103,10 @@ class _SingleWallpaperState extends State<SingleWallpaper> {
             //save as favourite
             GestureDetector(
                 onTap: () {
-                  _saveAsFav(widget.wallapaper.id, widget.wallapaper.url,
-                      widget.wallapaper.discription, widget.wallapaper.cretor);
+                  _removeFromFav(widget.wallapaper.id);
                 },
                 child: const ReusableButton(
-                    lable: "Save as favourite", isLoad: false))
+                    lable: "Remove from favourites", isLoad: false))
           ],
         ),
       ),

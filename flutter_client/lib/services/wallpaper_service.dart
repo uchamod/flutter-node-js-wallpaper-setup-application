@@ -5,7 +5,7 @@ import "package:flutter_client/models/wallpaper_model.dart";
 import "package:http/http.dart" as http;
 
 class WallpaperService {
-  final baseUrl = "http://192.168.56.1:5000/api/wall/";
+  final baseUrl = "http://192.168.137.153:5000/api/wall/";
 
   //search wallpapers
   Future<List<WallpaperModel>> searchWallpaper(String keyWord) async {
@@ -27,7 +27,7 @@ class WallpaperService {
   Future<List<WallpaperModel>> randomWallpaper() async {
     try {
       final responses =
-          await http.get(Uri.parse('http://192.168.56.1:5000/api/wall/random'));
+          await http.get(Uri.parse('http://192.168.137.153:5000/api/wall/random'));
 
       List<dynamic> wallpapers = json.decode(responses.body)["wallpapers"];
 
