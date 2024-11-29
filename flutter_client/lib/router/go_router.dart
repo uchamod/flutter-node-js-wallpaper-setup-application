@@ -4,6 +4,7 @@ import 'package:flutter_client/pages/favourite.dart';
 import 'package:flutter_client/pages/homepage.dart';
 import 'package:flutter_client/pages/login.dart';
 import 'package:flutter_client/pages/register.dart';
+import 'package:flutter_client/pages/single_favourite_img.dart';
 import 'package:flutter_client/pages/single_wallpaper.dart';
 import 'package:flutter_client/router/router_names.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +17,10 @@ class Routers {
         path: '/home',
         name: RouterNames.home,
         builder: (context, state) {
-          return const Homepage();
+          final index = state.extra as int;
+          return Homepage(
+            selectedIndex: index,
+          );
         },
       ),
       GoRoute(
@@ -55,6 +59,14 @@ class Routers {
           return SingleWallpaper(
             wallapaper: wallpaper,
           );
+        },
+      ),
+      GoRoute(
+        path: '/singleFavouriteWallpaper',
+        name: RouterNames.singleFavouriteWallpaper,
+        builder: (context, state) {
+          final wallpaper = state.extra as Map<String, dynamic>;
+          return SingleFavouriteImg(wallpapers: wallpaper);
         },
       ),
     ],

@@ -16,21 +16,29 @@ class _FavouriteState extends State<Favourite> {
   final FavouriteServices _favouriteServices = FavouriteServices();
   bool _isLoading = false;
   List<dynamic> _favWallpapers = [];
-  void _getFav() async {
+  @override
+  void initState() {
+    super.initState();
+    _getFav();
+  }
+
+  //get saved wallpapers
+  Future<void> _getFav() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       List<dynamic> favWallpapers = await _favouriteServices.getFromFav();
       setState(() {
         _favWallpapers = favWallpapers;
       });
     } catch (err) {
-      throw Exception('Failed to add to favorites');
+      throw Exception('Failed to get from favorites ${err}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-  }
-
-  @override
-  void initState() {
-    _getFav();
-    super.initState();
   }
 
   @override
@@ -39,6 +47,7 @@ class _FavouriteState extends State<Favourite> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xff0e0f0f),
+         
           title: const Text(
             "favourite",
             style: TextStyle(
@@ -47,54 +56,72 @@ class _FavouriteState extends State<Favourite> {
                 color: secondoryColor),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: [
-              StaggeredGrid.count(
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                axisDirection: AxisDirection.down,
-                crossAxisCount: 2,
-                children: _favWallpapers.map((wallpaper) {
-                  //wallapaper
-                  return GestureDetector(
-                    onTap: () {
-                      GoRouter.of(context).goNamed(RouterNames.singleWallpaper,
-                          extra: wallpaper);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              wallpaper.url,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Text(
-                            wallpaper.discription,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: secondoryColor,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
+        body: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: secondoryColor,
+                ),
               )
-            ],
-          ),
-        ),
+            : _favWallpapers.isEmpty
+                ? const Center(
+                    child: Text(
+                    "No Saved Wallpapers",
+                    style: TextStyle(
+                        color: secondoryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                    child: Column(
+                      children: [
+                        StaggeredGrid.count(
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          axisDirection: AxisDirection.down,
+                          crossAxisCount: 2,
+                          children: _favWallpapers.map((wallpaper) {
+                            //wallapaper
+                            return GestureDetector(
+                              onTap: () {
+                                GoRouter.of(context).goNamed(
+                                    RouterNames.singleFavouriteWallpaper,
+                                    extra: wallpaper);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        wallpaper["url"],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Text(
+                                      wallpaper["description"],
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: secondoryColor,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        )
+                      ],
+                    ),
+                  ),
       ),
     );
   }

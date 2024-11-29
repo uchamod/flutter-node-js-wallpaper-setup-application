@@ -21,13 +21,11 @@ class _WallPageState extends State<WallPage> {
 
   void _getWalls() async {
     try {
-      for (int i = 0; i < 3; i++) {
-        List<WallpaperModel> randomWallpapers =
-            await _wallpaperService.randomWallpaper();
-        setState(() {
-          _wallpapers = [...randomWallpapers];
-        });
-      }
+      List<WallpaperModel> randomWallpapers =
+          await _wallpaperService.randomWallpaper();
+      setState(() {
+        _wallpapers = [...randomWallpapers];
+      });
     } catch (err) {
       print("Error random fetching wallpapers: $err");
     }
@@ -68,7 +66,7 @@ class _WallPageState extends State<WallPage> {
           ],
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Column(
             children: [
               StaggeredGrid.count(

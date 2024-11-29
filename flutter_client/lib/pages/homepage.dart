@@ -5,7 +5,8 @@ import 'package:flutter_client/pages/wall_page.dart';
 import 'package:flutter_client/util/constants.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+ int selectedIndex;
+ Homepage({super.key, required this.selectedIndex});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -17,7 +18,7 @@ class _HomepageState extends State<Homepage> {
   int _selectedIndex = 0;
   void toggleButton(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.selectedIndex = index;
     });
   }
 
@@ -30,11 +31,11 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _pages[widget.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xff0e0f0f),
           type: BottomNavigationBarType.shifting,
-          currentIndex: _selectedIndex,
+          currentIndex: widget.selectedIndex,
           elevation: 1,
           selectedItemColor: primaryColor,
           unselectedItemColor: secondoryColor,

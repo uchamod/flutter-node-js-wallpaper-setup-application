@@ -5,4 +5,5 @@ class RouterNames {
   static const String favourite = "fav";
   static const String authCheck = "auth";
   static const String singleWallpaper = "singleWallpaper";
+  static const String singleFavouriteWallpaper = "singleFavouriteWallpaper";
 }

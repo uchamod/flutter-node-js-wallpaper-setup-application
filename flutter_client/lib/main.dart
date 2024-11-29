@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -53,6 +54,10 @@ class _CheckAuthStatusState extends State<CheckAuthStatus> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoggedIn ? const Homepage() : const Login();
+    return isLoggedIn
+        ? Homepage(
+            selectedIndex: 0,
+          )
+        : const Login();
   }
 }

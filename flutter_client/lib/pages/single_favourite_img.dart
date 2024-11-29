@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/models/wallpaper_model.dart';
+import 'package:flutter_client/router/router_names.dart';
 import 'package:flutter_client/services/favourite_services.dart';
 import 'package:flutter_client/services/wallpaper_service.dart';
 import 'package:flutter_client/util/constants.dart';
 import 'package:flutter_client/widget/reusable_button.dart';
+import 'package:go_router/go_router.dart';
 
 class SingleFavouriteImg extends StatefulWidget {
-  final WallpaperModel wallapaper;
-  const SingleFavouriteImg({super.key, required this.wallapaper});
+  final Map<String, dynamic> wallpapers;
+  const SingleFavouriteImg({
+    super.key,
+    required this.wallpapers,
+  });
 
   @override
   State<SingleFavouriteImg> createState() => _SingleFavouriteImgState();
@@ -59,18 +63,29 @@ class _SingleFavouriteImgState extends State<SingleFavouriteImg> {
   }
 
 //remove from wallpaper
-  void _removeFromFav(String id) async {
+  Future<void> _removeFromFav(String id) async {
     try {
       await _favouriteServices.removeFromFav(id);
-      Navigator.pop(context);
+      GoRouter.of(context).goNamed(RouterNames.home, extra: 2);
     } catch (err) {
-      print("Failed to set wallpaper: $err");
+      print("Failed to remove wallpaper: $err");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              GoRouter.of(context).goNamed(RouterNames.home, extra: 2);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 24,
+              color: secondoryColor,
+            )),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -81,7 +96,7 @@ class _SingleFavouriteImgState extends State<SingleFavouriteImg> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                widget.wallapaper.url,
+                widget.wallpapers["url"],
                 fit: BoxFit.cover,
               ),
             ),
@@ -93,7 +108,7 @@ class _SingleFavouriteImgState extends State<SingleFavouriteImg> {
             //set as wallpaper
             GestureDetector(
                 onTap: () {
-                  _setWallpaper(widget.wallapaper.url);
+                  _setWallpaper(widget.wallpapers["url"]);
                 },
                 child: ReusableButton(
                     lable: "Set as Wallpaper", isLoad: _isLoading)),
@@ -103,10 +118,10 @@ class _SingleFavouriteImgState extends State<SingleFavouriteImg> {
             //save as favourite
             GestureDetector(
                 onTap: () {
-                  _removeFromFav(widget.wallapaper.id);
+                  _removeFromFav(widget.wallpapers["url"]);
                 },
-                child: const ReusableButton(
-                    lable: "Remove from favourites", isLoad: false))
+                child: ReusableButton(
+                    lable: "Remove from favourites", isLoad: _isLoading))
           ],
         ),
       ),

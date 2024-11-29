@@ -4,11 +4,11 @@ import "package:http/http.dart" as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavouriteServices {
-  final baseUrl = "http://192.168.137.153:5000/api/fav/";
+  final baseUrl = "http://192.168.10.148:5000/api/fav";
 
   //add to favourite
   Future<void> addToFav(
-      String id, String url, String discription, String cretor) async {
+      String id, String url, String discription, String creator) async {
     try {
       //get the token from shared preferences
       final SharedPreferences _pref = await SharedPreferences.getInstance();
@@ -23,10 +23,10 @@ class FavouriteServices {
             'id': id,
             'url': url,
             'description': discription,
-            'photographer': cretor,
+            'creator': creator,
           }));
       if (response.statusCode != 200) {
-        throw Exception('Failed to add to favorites ${response.statusCode}');
+        throw Exception('request not succsuss ${response.statusCode}');
       }
     } catch (err) {
       print('Error adding to favorites: $err');
@@ -41,12 +41,14 @@ class FavouriteServices {
       final SharedPreferences _pref = await SharedPreferences.getInstance();
       String? token = _pref.getString("token");
 
-      final response = await http.post(Uri.parse("$baseUrl/remove"), headers: {
-        'Content-Type': 'application/json',
-        'auth-token': token!,
-      }, body: {
-        'id': id,
-      });
+      final response = await http.post(
+        Uri.parse("$baseUrl/remove"),
+        headers: {
+          'Content-Type': 'application/json',
+          'auth-token': token!,
+        },
+        body: jsonEncode({"id": id}),
+      );
       if (response.statusCode != 200) {
         throw Exception(
             'Failed to remove from favorites ${response.statusCode}');
@@ -65,7 +67,6 @@ class FavouriteServices {
     final response = await http.get(
       Uri.parse("$baseUrl/getfav"),
       headers: {
-        'Content-Type': 'application/json',
         'auth-token': token!,
       },
     );

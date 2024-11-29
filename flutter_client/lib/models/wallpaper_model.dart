@@ -13,7 +13,7 @@ class WallpaperModel {
   factory WallpaperModel.fromJson(Map<String, dynamic> json) {
     return WallpaperModel(
       id: json['id'],
-      url: json['url'],
+      url: json['url'] ?? "",
       discription: json['description'] ?? 'No description',
       cretor: json['photographer'] ?? 'Unknown photographer',
     );
